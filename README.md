@@ -1,146 +1,90 @@
-# ELI5 — Explain Like I Am 5
+# ELI33 — Explain Like I Am 33
 
-> A [Claude Code](https://claude.ai) skill that explains anything to anyone — kids, managers, engineers, parents. It adapts tone, vocabulary, analogies, and framing to match the audience.
+> 複雑なテーマを、対象分野の専門家ではない33歳の成人に向けて、正確かつ対等な言葉で説明する [Claude Code](https://claude.ai) スキルです。対象者が明示された場合は、その年齢・学歴・職種・関係性を優先します。
 
-Ever needed to explain a technical concept to your manager? Or break down code for a 5th grader? ELI5 makes Claude automatically adjust its explanation style based on who's listening.
+ELI33 は結論を先に示し、必要な専門用語を定義しながら、成人の日常や仕事に結びつく例、仕組み、利点、欠点、判断材料を提供します。従来の `ELI5` も後方互換トリガーとして認識しますが、対象者が指定されていなければ33歳向けに説明します。
 
-Read the full blog post on how this skill was built: [Building an ELI5 Skill for Claude](https://andrewou.pages.dev/posts/building-an-eli5-skill-for-claude/)
+## サポート対象
 
-## Supported Audiences
+| カテゴリ | 例 |
+|----------|----|
+| **既定** | 33歳の非専門家（一般的な成人の生活・仕事経験を想定） |
+| **年齢** | 5歳、10歳、15歳、20–39歳、40歳以上 |
+| **学歴** | 小学5年、中学生、高校生、大学生、大学院生 |
+| **職種** | マネージャー、エンジニア、デザイナー、ディレクター、プロダクトマネージャー |
+| **関係性** | パートナー、親、子ども、友人 |
 
-| Category | Examples |
-|----------|---------|
-| **Ages** | 5, 10, 15, 20, 30, 40+ |
-| **Grade Levels** | 5th grade, Middle school, Senior High, College, Graduate school |
-| **Job Roles** | Manager, Engineer, Designer, Director, Product Manager |
-| **Relationships** | Wife, Husband, Parents, Kids, Friend |
+## 使用例
 
-## Usage Examples
-
+```text
+ELI33: データベースインデックスとは何か説明して
+33歳向けに複利の仕組みを説明して
+成人にも分かるようにAPIのレート制限を説明して
+専門外の社会人向けに、このコードの目的を説明して
+この仕組みをマネージャー向けに説明して
+マージコンフリクトを小学5年生向けに説明して
 ```
-ELI5 what a database index is
-Explain this code to my manager
-Break down how git merge conflicts work for a 5th grader
-Explain this error to my mom
-Simplify this for a designer
-```
 
-## How It Works
+対象者を指定しない場合は33歳向けです。指定した場合は、その対象者に合わせて語彙、情報量、例、口調、重点を調整します。
 
-The skill detects the target audience from your prompt and calibrates:
+## 説明方針
 
-- **Vocabulary** — no jargon for kids, proper terminology for engineers
-- **Analogies** — toys and playground for age 5, business outcomes for managers
-- **Tone** — playful for children, professional for directors, warm for family
-- **Depth** — short and sweet for simple audiences, nuanced for grad students
-- **Framing** — impact/risk for managers, UX for designers, architecture for engineers
+既定では次の順に説明します。
 
-## Installation
+1. **要点**
+2. **仕組み**（必要な専門用語を初出時に定義）
+3. **具体例**（仕事、家計、契約、健康管理、デジタルサービスなど）
+4. **注意点またはトレードオフ**
+5. **実生活での意味**
 
-Copy the skill into your Claude Code skills directory:
+比喩は理解を助ける場合だけ使い、成人に対して玩具、動物、お菓子などの幼児向け比喩へ過度に依存しません。
+
+## インストール
 
 ```bash
-git clone https://github.com/DreambigOu/ELI5.git
-cp -r ELI5/skills/eli5 ~/.claude/skills/eli5
+git clone https://github.com/DreambigOu/ELI33.git
+cp -r ELI33/skills/eli33 ~/.claude/skills/eli33
 ```
 
-Then use it in Claude Code by saying things like "ELI5 this" or "explain this to my manager."
+その後、Claude Code で上記の使用例のように依頼してください。
 
-## Evaluations
+## 評価
 
-Read the full guide on how the eval system works: [How to Evaluate a Claude Code Skill](https://andrewou.pages.dev/posts/how-to-evaluate-a-claude-code-skill/)
+評価ケースは [`eli33-workspace/evals.json`](eli33-workspace/evals.json) にあります。各ケースはプロンプト、対象者、検証可能なアサーションを持ちます。既定ケースでは以下を評価します。
 
-### Adding a New Test Case
+- 幼児語や子ども扱いする表現を使わない
+- 必要な専門用語を初出時に定義する
+- 成人の日常または仕事に関連する具体例を含める
+- 正確性を保ち、利点だけでなくトレードオフと判断材料を示す
 
-Test cases are defined in `eli5-workspace/evals.json`. Add a new entry to the `evals` array:
+### 評価の実行
 
-```json
-{
-  "id": 3,
-  "name": "explain-recursion-teenager",
-  "prompt": "Explain recursion like I'm 15",
-  "audience": "Age 15",
-  "assertions": [
-    "Uses social media, gaming, or phone references as analogies",
-    "Tone is casual but not cringey — no 'fellow kids' energy",
-    "Correctly explains the concept of a function calling itself",
-    "Mentions a base case or stopping condition"
-  ]
-}
-```
-
-Each test case needs:
-- A **prompt** — what the user would say to Claude
-- A **name** — directory-friendly identifier for storing results
-- **Assertions** — specific, verifiable criteria to grade against (4 per test works well)
-
-### Running Evaluations
-
-**Prerequisites:** [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and the skill installed at `~/.claude/skills/eli5/`.
+**前提:** [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) と `~/.claude/skills/eli33/` にインストールしたスキルが必要です。
 
 ```bash
-# Run all tests + auto-grade with pass/fail
-python eli5-workspace/run-evals.py
+# 全ケースをスキルあり・ベースラインで実行し、自動採点
+python eli33-workspace/run-evals.py
 
-# Run a single test
-python eli5-workspace/run-evals.py --test=1
+# 1ケースのみ実行
+python eli33-workspace/run-evals.py --test=1
 
-# Skip baseline, only test the skill
-python eli5-workspace/run-evals.py --with-skill-only
+# スキルのみ実行
+python eli33-workspace/run-evals.py --a skills/eli33/SKILL.md
 
-# Grade existing outputs without re-running tests
-python eli5-workspace/run-evals.py --grade-only
+# 保存済み出力のみ再採点
+python eli33-workspace/run-evals.py --grade-only
 ```
 
-The script does three things:
-1. **Runs each prompt** twice — once with the skill, once without (baseline)
-2. **Auto-grades** every output against its assertions using Claude
-3. **Prints a pass rate summary** comparing skill vs baseline
+出力は `eli33-workspace/iteration-N/` に保存されます。評価ランナーは各回答を `evals.json` のアサーションごとに PASS/FAIL 判定し、構成別の合格率を表示します。
 
-Example output:
+### 評価結果
 
-```
---- Test 1: explain-db-index-age5 ---
-  [with skill]
-    PASS  #1 — No technical jargon present
-    PASS  #2 — Uses book/page analogy and toy/messy room analogy
-    PASS  #3 — Sentences are short and conversational
-    PASS  #4 — Warm, enthusiastic tone with "huuuge", "super duper fast"
-  [baseline]
-    PASS  #1 — No technical jargon found
-    FAIL  #2 — Uses phone book analogy, not child-friendly
-    PASS  #3 — Sentences are generally short
-    FAIL  #4 — Tone is informative but encyclopedic
+ELI33 用のモデル評価はまだ実施していません。実測後、条件、実行日時、モデル、および結果を [`eli33-workspace/eval-results.md`](eli33-workspace/eval-results.md) に記録します。旧 ELI5 の測定値は ELI33 の性能値として流用していません。
 
-=========================================
-  PASS RATE SUMMARY — Iteration 1
-=========================================
-  With Skill:    10/12 passed (83.3%)
-  Without Skill: 5/12 passed (41.6%)
-  Delta:         41.7%
-=========================================
-```
+## コントリビューション
 
-Results are saved to `eli5-workspace/iteration-N/`, auto-incrementing with each run. Each test case produces `grading.txt` files with detailed evidence.
+新しい対象者、言語、評価ケース、説明品質の改善に関する PR を歓迎します。
 
-### Current Results
-
-See [eli5-workspace/eval-results.md](eli5-workspace/eval-results.md) for the full evaluation strategy and detailed grading.
-
-| Metric | With Skill | Without Skill | Delta |
-|--------|-----------|---------------|-------|
-| Pass Rate | **83.3%** | 41.6% | +41.7% |
-
-The biggest improvement is in audience-specific framing — especially for non-technical audiences like managers (0% baseline to 50% with skill).
-
-## Contributing
-
-PRs welcome! Ideas for improvement:
-
-- Add more audience types (e.g., CEO, intern, journalist)
-- Add non-English language support
-- Improve evaluation coverage with more test cases
-
-## License
+## ライセンス
 
 MIT
