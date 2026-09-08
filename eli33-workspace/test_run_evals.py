@@ -17,19 +17,19 @@ run_evals = importlib.import_module("run-evals")
 def tmp_workspace(tmp_path, monkeypatch):
     """Set up a temporary workspace with evals.json and patch SCRIPT_DIR."""
     evals_data = {
-        "skill_name": "eli5",
+        "skill_name": "eli33",
         "evals": [
             {
                 "id": 0,
                 "name": "test-case-one",
-                "prompt": "ELI5 what a widget is",
-                "audience": "Age 5",
-                "assertions": ["No jargon", "Uses a toy analogy"],
+                "prompt": "ELI33: Explain what a database index is",
+                "audience": "Age 33",
+                "assertions": ["Defines technical terms", "Uses an adult work example"],
             },
             {
                 "id": 1,
                 "name": "test-case-two",
-                "prompt": "Explain widgets to my manager",
+                "prompt": "Explain API rate limiting to a non-specialist manager",
                 "audience": "Manager",
                 "assertions": ["No code blocks", "Under 500 words", "Actionable"],
             },
@@ -62,7 +62,7 @@ class TestLoadEvals:
 
     def test_returns_assertions(self, tmp_workspace):
         evals = run_evals.load_evals()
-        assert evals[0]["assertions"] == ["No jargon", "Uses a toy analogy"]
+        assert evals[0]["assertions"] == ["Defines technical terms", "Uses an adult work example"]
         assert len(evals[1]["assertions"]) == 3
 
 

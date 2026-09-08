@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""ELI5 Skill Evaluation Runner
+"""ELI33 Skill Evaluation Runner
 
 Runs each test case across one or more skill configurations, then auto-grades with pass/fail.
 
@@ -14,13 +14,13 @@ Usage:
   python run-evals.py
 
   # A/B test two skill versions
-  python run-evals.py --a skills/eli5/SKILL.md --b ~/experiments/SKILL-v2.md
+  python run-evals.py --a skills/eli33/SKILL.md --b ~/experiments/SKILL-v2.md
 
   # A/B with custom labels
-  python run-evals.py --a skills/eli5/SKILL.md --a-label current --b ~/new/SKILL.md --b-label rewrite
+  python run-evals.py --a skills/eli33/SKILL.md --a-label current --b ~/new/SKILL.md --b-label rewrite
 
   # Single skill only (no comparison)
-  python run-evals.py --a skills/eli5/SKILL.md
+  python run-evals.py --a skills/eli33/SKILL.md
 
   # Other options
   python run-evals.py --test=1           # Run only test 1
@@ -37,7 +37,7 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 EVALS_JSON = SCRIPT_DIR / "evals.json"
-DEFAULT_SKILL = Path.home() / ".claude" / "skills" / "eli5" / "SKILL.md"
+DEFAULT_SKILL = Path.home() / ".claude" / "skills" / "eli33" / "SKILL.md"
 
 
 def load_evals():
@@ -188,7 +188,7 @@ def grade_all(evals: list[dict], outdir: Path, configs: list[dict], test_filter:
 
     # Save summary
     summary_lines = [
-        f"ELI5 Eval Summary — Iteration {iteration_num}",
+        f"ELI33 Eval Summary — Iteration {iteration_num}",
         f"Date: {datetime.now(timezone.utc).isoformat()}",
         "",
     ]
@@ -251,7 +251,7 @@ def build_configs(args) -> list[dict]:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ELI5 Skill Evaluation Runner")
+    parser = argparse.ArgumentParser(description="ELI33 Skill Evaluation Runner")
     parser.add_argument("--test", type=int, help="Run only this test number (1-indexed)")
     parser.add_argument("--grade-only", action="store_true", help="Grade existing outputs without re-running")
     parser.add_argument("--a", metavar="PATH", help="Path to skill version A")
@@ -270,7 +270,7 @@ def main():
 
     test_filter = (args.test - 1) if args.test else None
 
-    print("=== ELI5 Eval Runner ===")
+    print("=== ELI33 Eval Runner ===")
     print(f"Output: {outdir}")
     for c in configs:
         src = c["skill_path"] or "(no skill)"
